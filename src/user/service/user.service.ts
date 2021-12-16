@@ -1,4 +1,4 @@
-import { AuthService } from '../../auth/auth/auth.service';
+import { AuthService } from '../../auth/service/auth.service';
 import { UserEntity } from './../models/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,6 +22,7 @@ export class UserService {
                 newUser.username = user.username;
                 newUser.email = user.email;
                 newUser.password = passwordHash;
+                newUser.role = user.role;
 
                 return from(this.userRepository.save(newUser)).pipe(
                     map((user: User) => {
@@ -60,6 +61,10 @@ export class UserService {
     updateOne(id: number, user: User): Observable<any> {
         delete user.email;
         delete user.password;
+        return from(this.userRepository.update(id, user))
+    }
+
+    updateRoleOfUser(id: number, user: User): Observable<any> {
         return from(this.userRepository.update(id, user))
     }
 
